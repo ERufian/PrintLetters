@@ -14,5 +14,5 @@ A couple of days ago I was asked this question at a phone interview. I overcompl
 which was tremendously annoying. I decided to write it out as an exercise anyway, just for my own sake.
 
 Maybe someone actually has uses for this kind of functionality so I decided to upload it to Github.
-Feel free to re-use it. I am releasing this code under a choice of CC BY 3.0 or GPL v2 (your choice, pick one or the other). 
+Feel free to re-use it. I am releasing this code under a choice of MIT License or GPL v2 (your choice, pick one or the other). 
 If you need different terms please let me know.
