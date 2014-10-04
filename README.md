@@ -6,9 +6,9 @@ that are easier to remember than 10 digits (using letters as shown on a telephon
 
 The portions that remain as numbers are:
 * The country and area codes (traditionally left as is, for example 1-800)
-* The numbers 1 and 0
+* The digits 1 and 0
 
-The rest are converted to letters and the results printed out
+The remaining digits are converted to letters and all the possible combinations are printed out
 
 A couple of days ago I was asked this question at a phone interview. I overcomplicated the answer and didn't get anywhere, 
 which was tremendously annoying. After the interview I decided to write it out as an exercise anyway, just for my own sake.
