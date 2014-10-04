@@ -11,7 +11,7 @@ The portions that remain as numbers are:
 The rest are converted to letters and the results printed out
 
 A couple of days ago I was asked this question at a phone interview. I overcomplicated the answer and didn't get anywhere, 
-which was tremendously annoying. I decided to write it out as an exercise anyway, just for my own sake.
+which was tremendously annoying. After the interview I decided to write it out as an exercise anyway, just for my own sake.
 
 Maybe someone actually has uses for this kind of functionality so I decided to upload it to Github.
 Feel free to re-use it. I am releasing this code under a choice of MIT License or GPL v2 (your choice, pick one or the other). 
