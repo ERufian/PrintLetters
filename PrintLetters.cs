@@ -17,25 +17,25 @@ namespace PrintLetters
       /// <summary>
       /// The table for possible conversions from a digit to a letter.
       /// </summary>
-      private static readonly char[,] ConversionTable = new char[10, 4];
+      private static readonly char[][] ConversionTable = null;
 
       /// <summary>
       /// Initializes static members of the <see cref="PrintLetters"/> class.
       /// </summary>
       static PrintLetters()
       {
-         PrintLetters.ConversionTable = new char[10, 4] 
+         PrintLetters.ConversionTable = new char[10][] 
          { 
-            { '0', ':', ':', ':' },
-            { '1', ':', ':', ':' },
-            { 'A', 'B', 'C', ':' },
-            { 'D', 'E', 'F', ':' },
-            { 'G', 'H', 'I', ':' },
-            { 'J', 'K', 'L', ':' },
-            { 'M', 'N', 'O', ':' },
-            { 'P', 'Q', 'R', 'S' },
-            { 'T', 'U', 'V', ':' },
-            { 'W', 'X', 'Y', 'Z' }
+            new char[] { '0' },
+            new char[] { '1' },
+            new char[] { 'A', 'B', 'C' },
+            new char[] { 'D', 'E', 'F' },
+            new char[] { 'G', 'H', 'I' },
+            new char[] { 'J', 'K', 'L' },
+            new char[] { 'M', 'N', 'O' },
+            new char[] { 'P', 'Q', 'R', 'S' },
+            new char[] { 'T', 'U', 'V' },
+            new char[] { 'W', 'X', 'Y', 'Z' }
          };
       }
 
@@ -86,53 +86,64 @@ namespace PrintLetters
       /// <param name="inputNumbers">The original input number as a char array of 10 digits</param>
       /// <param name="printPrefix">An optional prefix to print first (this can be used for cases like 1-800-nnnnnnn where the 1-800 is not converted).</param>
       /// <remarks>
-      /// The conversion table has up to 4 items, this routine uses bit manipulation to count in base 4
+      /// The conversion table has up to 4 items, this routine uses bit manipulation to count in bit pairs (base 4)
       /// </remarks>
       public static void Convert(char[] inputNumbers, string printPrefix)
       {
+         if (0 == inputNumbers.Length)
+         {
+            return;
+         }
+
+         // Quick pre-computations:
+         // Adjust input numbers from char (Unicode or ASCII) to numeric values
+         // The current digit indices as 2 bits per digit, used for counter resets
+         // Bitmask used for zeroing bit pairs or testing bit pairs
+         // Largest value for the bit-pair counter
+         
+         long[] digitReset = new long[inputNumbers.Length];
+         long[] zeroMask = new long[inputNumbers.Length];
+         long counter = 0;
+
          for (int i = 0; inputNumbers.Length > i; ++i)
          {
             inputNumbers[i] -= '0';
+            int shiftLeft = (inputNumbers.Length - i - 1) << 1;
+            digitReset[i] = (ConversionTable[inputNumbers[i]].Length - 1) << shiftLeft;
+            zeroMask[i] = 3 << shiftLeft;
+            counter |= digitReset[i];
          }
-         
-         // Upper limit for counter: 2 bits per digit
-         long upperLimit = 1 << (inputNumbers.Length << 1); // Use long to support the full range of 10 digits if needed
-         bool printResult = true;
-         
-         // Optimize inputs of the form 1-nnn... where we can count in increments of 4
-         int counterIncrement = (inputNumbers[0] == 1) ? 4 : 1;
-         for (long counter = 0; upperLimit > counter; counter += counterIncrement)
+
+         // Main countdown
+
+         do
          {
             char[] candidateBuilder = new char[inputNumbers.Length];
 
-            for (int j = 0; inputNumbers.Length > j; ++j)
+            for (int i = 0; inputNumbers.Length > i; ++i)
             {
                // break up counter into pairs of 2 bits
-               char index = (char)(counter >> (j << 1) & 3);
-
-               char appendCandidate = PrintLetters.ConversionTable[inputNumbers[j], index];
-               if (appendCandidate != ':')
-               {
-                  candidateBuilder[j] = appendCandidate;
-               }
-               else
-               {
-                  printResult = false;
-                  break;
-               }
+               char index = (char)(counter >> ((inputNumbers.Length - i - 1) << 1) & 3);
+               char appendCandidate = PrintLetters.ConversionTable[inputNumbers[i]][index];
+               candidateBuilder[i] = appendCandidate;
             }
 
-            if (printResult)
+            StringBuilder result = new StringBuilder(printPrefix);
+            result.Append(candidateBuilder);
+            Console.WriteLine(result);
+
+            // Count down and adjust counter as needed
+            counter -= 1;
+            for (int i = 0; inputNumbers.Length > i; ++i)
             {
-               StringBuilder result = new StringBuilder(printPrefix);
-               result.Append(candidateBuilder);
-               Console.WriteLine(result);
+               if (3 == (counter & zeroMask[i]))
+               {
+                  counter &= ~zeroMask[i];
+                  counter |= digitReset[i];
+               }
             }
-            else
-            {
-               printResult = true;
-            }
-         }
+         } 
+         while (0 <= counter);
       }
    }
 }
