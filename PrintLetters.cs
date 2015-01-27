@@ -136,7 +136,7 @@ namespace PrintLetters
             counter -= 1;
             for (int i = 0; inputNumbers.Length > i; ++i)
             {
-               if (3 == (counter & zeroMask[i]))
+               if (zeroMask[i] == (counter & zeroMask[i]))
                {
                   counter &= ~zeroMask[i];
                   counter |= digitReset[i];
