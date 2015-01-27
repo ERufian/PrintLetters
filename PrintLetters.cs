@@ -3,7 +3,7 @@
 //   Copyright (c) Eusebio Rufian-Zilbermann
 // </copyright>
 //-----------------------------------------------------------------------
-namespace PrintLetters
+namespace Ecrz.InterviewQuestions
 {
    using System;
    using System.Text;
@@ -12,32 +12,24 @@ namespace PrintLetters
    /// <summary>
    /// Produce mnemonic versions of a 10-digit phone number
    /// </summary>
-   public class PrintLetters
+   public static class PrintLetters
    {
       /// <summary>
       /// The table for possible conversions from a digit to a letter.
       /// </summary>
-      private static readonly char[][] ConversionTable = null;
-
-      /// <summary>
-      /// Initializes static members of the <see cref="PrintLetters"/> class.
-      /// </summary>
-      static PrintLetters()
+      private static readonly char[][] ConversionTable = new char[][]
       {
-         PrintLetters.ConversionTable = new char[10][] 
-         { 
-            new char[] { '0' },
-            new char[] { '1' },
-            new char[] { 'A', 'B', 'C' },
-            new char[] { 'D', 'E', 'F' },
-            new char[] { 'G', 'H', 'I' },
-            new char[] { 'J', 'K', 'L' },
-            new char[] { 'M', 'N', 'O' },
-            new char[] { 'P', 'Q', 'R', 'S' },
-            new char[] { 'T', 'U', 'V' },
-            new char[] { 'W', 'X', 'Y', 'Z' }
-         };
-      }
+         new[] { '0' },
+         new[] { '1' },
+         new[] { 'A', 'B', 'C' },
+         new[] { 'D', 'E', 'F' },
+         new[] { 'G', 'H', 'I' },
+         new[] { 'J', 'K', 'L' },
+         new[] { 'M', 'N', 'O' },
+         new[] { 'P', 'Q', 'R', 'S' },
+         new[] { 'T', 'U', 'V' },
+         new[] { 'W', 'X', 'Y', 'Z' }
+      };
 
       /// <summary>
       /// The main executable method.
@@ -47,7 +39,7 @@ namespace PrintLetters
       /// <param name="args">The input arguments.</param>
       public static void Main(string[] args)
       {
-         if (1 != args.Length || null == args[0] || string.IsNullOrEmpty(args[0]))
+         if (null == args || 1 != args.Length || string.IsNullOrEmpty(args[0]))
          {
             Console.WriteLine("Usage: PrintLetter <10 digit phone number as nnnnnnnnnn or n-nnn-nnn-nnnn>");
             return;
@@ -90,7 +82,7 @@ namespace PrintLetters
       /// </remarks>
       public static void Convert(char[] inputNumbers, string printPrefix)
       {
-         if (0 == inputNumbers.Length)
+         if (null == inputNumbers || 0 == inputNumbers.Length || 0 >= inputNumbers.Length || null == printPrefix)
          {
             return;
          }
@@ -99,8 +91,7 @@ namespace PrintLetters
          // Adjust input numbers from char (Unicode or ASCII) to numeric values
          // The current digit indices as 2 bits per digit, used for counter resets
          // Bitmask used for zeroing bit pairs or testing bit pairs
-         // Largest value for the bit-pair counter
-         
+         // Largest value for the bit-pair counter         
          long[] digitReset = new long[inputNumbers.Length];
          long[] zeroMask = new long[inputNumbers.Length];
          long counter = 0;
@@ -114,17 +105,16 @@ namespace PrintLetters
             counter |= digitReset[i];
          }
 
-         // Main countdown
-
+         // Main loop
          do
          {
+            // Print out the counter value as characters
             char[] candidateBuilder = new char[inputNumbers.Length];
-
             for (int i = 0; inputNumbers.Length > i; ++i)
             {
                // break up counter into pairs of 2 bits
                char index = (char)(counter >> ((inputNumbers.Length - i - 1) << 1) & 3);
-               char appendCandidate = PrintLetters.ConversionTable[inputNumbers[i]][index];
+               char appendCandidate = ConversionTable[inputNumbers[i]][index];
                candidateBuilder[i] = appendCandidate;
             }
 
